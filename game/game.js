@@ -7,24 +7,9 @@ const ctx = canvas.getContext("2d");
 const bgImg = new Image();
 bgImg.src = "./assets/background.jpg";
 
+
 const playerImg = new Image();
 playerImg.src = "./assets/player.png";
-
-
-// ================= SOUNDS =================
-
-const menuMusic = new Audio("./assets/menu.mp3");
-menuMusic.loop = true;
-menuMusic.volume = 0.5;
-
-const shootSound = new Audio("./assets/shoot.wav");
-const explosionSound = new Audio("./assets/explosion.wav");
-const gameoverSound = new Audio("./assets/gameover.wav");
-
-
-// ================= LOAD CHECK =================
-
-let imagesLoaded = false;
 
 let bgLoaded = false;
 let playerLoaded = false;
@@ -40,14 +25,16 @@ playerImg.onload = () => {
 };
 
 
-bgImg.onerror = () => {
-    console.log("Background image missing");
-};
+// ================= SOUNDS =================
+
+const menuMusic = new Audio("./assets/menu.mp3");
+menuMusic.loop = true;
+menuMusic.volume = 0.5;
 
 
-playerImg.onerror = () => {
-    console.log("Player image missing");
-};
+const shootSound = new Audio("./assets/shoot.wav");
+const explosionSound = new Audio("./assets/explosion.wav");
+const gameoverSound = new Audio("./assets/gameover.wav");
 
 
 
@@ -55,13 +42,14 @@ playerImg.onerror = () => {
 
 let player = {
 
-    x: 375,
-    y: 520,
+    x:375,
+    y:520,
 
-    w: 50,
-    h: 50,
+    w:50,
+    h:50,
 
-    speed: 6
+    speed:6
+
 };
 
 
@@ -76,11 +64,14 @@ let gameOver = false;
 // ================= DATA =================
 
 let bullets = [];
+
 let enemies = [];
 
 let enemyTimer = 0;
 
+
 let score = 0;
+
 let lives = 3;
 
 
@@ -91,25 +82,9 @@ let keys = {};
 
 
 
-// ================= CLICK START =================
+// ================= START GAME =================
 
-canvas.addEventListener("click", () => {
-
-    if(!gameStarted){
-
-        gameStarted = true;
-
-        menuMusic.pause();
-
-    }
-
-});
-
-
-
-// ================= TOUCH START =================
-
-canvas.addEventListener("touchstart", () => {
+function startGame(){
 
     if(!gameStarted){
 
@@ -119,14 +94,34 @@ canvas.addEventListener("touchstart", () => {
 
     }
 
-});
+}
+
+
+
+// CLICK
+
+canvas.addEventListener(
+    "click",
+    startGame
+);
+
+
+// TOUCH
+
+canvas.addEventListener(
+    "touchstart",
+    startGame
+);
+
 
 
 
 // ================= KEYBOARD =================
 
 
-document.addEventListener("keydown",(e)=>{
+document.addEventListener(
+"keydown",
+(e)=>{
 
 
     keys[e.key] = true;
@@ -141,15 +136,18 @@ document.addEventListener("keydown",(e)=>{
         !gameOver
     ){
 
+
         bullets.push({
 
-            x:player.x + 22,
+            x:player.x+22,
+
             y:player.y
 
         });
 
 
         shootSound.currentTime = 0;
+
         shootSound.play();
 
     }
@@ -159,7 +157,7 @@ document.addEventListener("keydown",(e)=>{
     // RESTART
 
     if(
-        e.key.toLowerCase() === "r" &&
+        e.key.toLowerCase()=="r" &&
         gameOver
     ){
 
@@ -172,9 +170,11 @@ document.addEventListener("keydown",(e)=>{
 
 
 
-document.addEventListener("keyup",(e)=>{
+document.addEventListener(
+"keyup",
+(e)=>{
 
-    keys[e.key] = false;
+    keys[e.key]=false;
 
 });
 
@@ -191,19 +191,19 @@ function restartGame(){
     player.x = 375;
 
 
-    bullets = [];
+    bullets=[];
 
-    enemies = [];
-
-
-    score = 0;
-
-    lives = 3;
+    enemies=[];
 
 
-    gameOver = false;
+    score=0;
 
-    gameStarted = true;
+    lives=3;
+
+
+    gameOver=false;
+
+    gameStarted=true;
 
 
 }
@@ -218,20 +218,26 @@ function restartGame(){
 function update(){
 
 
-    if(!gameStarted || gameOver)
+    if(
+        !gameStarted ||
+        gameOver
+    ){
+
         return;
 
+    }
 
 
-    // PLAYER MOVE
+
+    // PLAYER MOVEMENT
 
 
     if(
         keys["ArrowLeft"] &&
-        player.x > 0
+        player.x>0
     ){
 
-        player.x -= player.speed;
+        player.x-=player.speed;
 
     }
 
@@ -242,9 +248,10 @@ function update(){
         player.x < canvas.width-player.w
     ){
 
-        player.x += player.speed;
+        player.x+=player.speed;
 
     }
+
 
 
 
@@ -254,26 +261,28 @@ function update(){
 
     for(let b of bullets){
 
-        b.y -= 8;
+        b.y-=8;
 
     }
 
 
     bullets =
     bullets.filter(
-        b => b.y > -20
+        b=>b.y>-20
     );
 
 
 
 
-    // SPAWN ENEMY
+
+
+    // ENEMY SPAWN
 
 
     enemyTimer++;
 
 
-    if(enemyTimer > 60){
+    if(enemyTimer>60){
 
 
         enemies.push({
@@ -291,9 +300,11 @@ function update(){
         });
 
 
-        enemyTimer = 0;
+        enemyTimer=0;
+
 
     }
+
 
 
 
@@ -301,17 +312,21 @@ function update(){
     // ENEMY MOVE
 
 
-    for(let i=enemies.length-1;i>=0;i--){
+    for(
+        let i=enemies.length-1;
+        i>=0;
+        i--
+    ){
 
 
-        let e = enemies[i];
+        let e=enemies[i];
 
 
-        e.y += e.speed;
+        e.y+=e.speed;
 
 
 
-        if(e.y > canvas.height){
+        if(e.y>canvas.height){
 
 
             enemies.splice(i,1);
@@ -321,10 +336,10 @@ function update(){
 
 
 
-            if(lives <=0){
+            if(lives<=0){
 
 
-                gameOver = true;
+                gameOver=true;
 
 
                 gameoverSound.currentTime=0;
@@ -334,8 +349,8 @@ function update(){
 
             }
 
-
         }
+
 
     }
 
@@ -346,15 +361,23 @@ function update(){
     // COLLISION
 
 
-    for(let i=bullets.length-1;i>=0;i--){
+    for(
+        let i=bullets.length-1;
+        i>=0;
+        i--
+    ){
 
 
-        for(let j=enemies.length-1;j>=0;j--){
+        for(
+            let j=enemies.length-1;
+            j>=0;
+            j--
+        ){
 
 
-            let b = bullets[i];
+            let b=bullets[i];
 
-            let e = enemies[j];
+            let e=enemies[j];
 
 
 
@@ -377,9 +400,7 @@ function update(){
                 enemies.splice(j,1);
 
 
-
                 score++;
-
 
 
                 explosionSound.currentTime=0;
@@ -390,15 +411,18 @@ function update(){
 
                 break;
 
+
             }
 
 
         }
 
+
     }
 
 
 }
+
 
 
 
@@ -434,7 +458,6 @@ function draw(){
 
 
     }
-
     else{
 
 
@@ -452,19 +475,21 @@ function draw(){
 
         );
 
+
     }
 
 
 
 
 
-    // START SCREEN
+    // START MENU
 
 
     if(!gameStarted){
 
 
-        ctx.fillStyle="rgba(0,0,0,.6)";
+        ctx.fillStyle="rgba(0,0,0,0.6)";
+
 
         ctx.fillRect(
 
@@ -481,6 +506,7 @@ function draw(){
 
 
         ctx.fillStyle="white";
+
 
         ctx.font="40px Arial";
 
@@ -519,10 +545,14 @@ function draw(){
 
 
 
+
     // PLAYER
 
 
-    if(playerLoaded && !gameOver){
+    if(
+        playerLoaded &&
+        !gameOver
+    ){
 
 
         ctx.drawImage(
@@ -567,6 +597,7 @@ function draw(){
 
         );
 
+
     }
 
 
@@ -594,7 +625,9 @@ function draw(){
 
         );
 
+
     }
+
 
 
 
@@ -604,29 +637,23 @@ function draw(){
 
     ctx.fillStyle="white";
 
+
     ctx.font="20px Arial";
 
 
     ctx.fillText(
-
         "Score: "+score,
-
         10,
-
         30
-
     );
 
 
     ctx.fillText(
-
         "Lives: "+lives,
-
         650,
-
         30
-
     );
+
 
 
 
@@ -638,7 +665,8 @@ function draw(){
     if(gameOver){
 
 
-        ctx.fillStyle="rgba(0,0,0,.7)";
+        ctx.fillStyle="rgba(0,0,0,0.7)";
+
 
         ctx.fillRect(
 
@@ -655,6 +683,7 @@ function draw(){
 
 
         ctx.fillStyle="red";
+
 
         ctx.font="50px Arial";
 
@@ -673,6 +702,7 @@ function draw(){
 
         ctx.fillStyle="white";
 
+
         ctx.font="20px Arial";
 
 
@@ -685,6 +715,7 @@ function draw(){
             320
 
         );
+
 
     }
 
@@ -712,16 +743,22 @@ function loop(){
 }
 
 
-
 loop();
 
 
 
-// ================= MUSIC =================
+// ================= MUSIC START =================
 
 
-menuMusic.play().catch(()=>{
+// kailangan ng user interaction sa GitHub browser
 
-    console.log("Music waiting for user click");
+canvas.addEventListener(
+"click",
+()=>{
 
+    menuMusic.play();
+
+},
+{
+    once:true
 });
