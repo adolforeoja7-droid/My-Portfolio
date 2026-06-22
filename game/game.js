@@ -5,7 +5,7 @@ const ctx = canvas.getContext("2d");
 // ================= ASSETS =================
 
 const bgImg = new Image();
-bgImg.src = "./assets/background.jpg";
+bgImg.src = "./assets/Background.jpg";
 
 
 const playerImg = new Image();
